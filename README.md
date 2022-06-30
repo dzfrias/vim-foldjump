@@ -1,5 +1,8 @@
 # foldjump.vim
-Jump between folds with ease (a replacement for zk)
+Jump between folds with ease (a replacement for zk). Where normal zk would go
+up until the nearest folded line, foldjump will go to the top of a folded
+section, making movement in combination with zj much more intuitive and
+predictable.
 
 Enter `:help foldjump` for more details.
 
