@@ -5,50 +5,50 @@
 " =============================================================================
 
 if exists('g:loaded_foldjump') || &compatible
-    finish
+  finish
 endif
 
 let g:loaded_foldjump = 1
 
 if !exists('g:foldjump_map_keys')
-    let g:foldjump_map_keys = 1
+  let g:foldjump_map_keys = 1
 endif
 
 function! s:UpUntilFold(lnum) abort
-    if foldlevel(a:lnum) !=? 0
-        return a:lnum
-    endif
+  if foldlevel(a:lnum) !=? 0
+    return a:lnum
+  endif
 
-    return s:UpUntilFold(a:lnum - 1)
+  return s:UpUntilFold(a:lnum - 1)
 endfunction
 
 function! s:FoldUpInBlock(lnum, baselinefold) abort
-    if a:lnum ==? 1
-        return 1
-    endif
-    if foldlevel(a:lnum) !=? a:baselinefold
-        return a:lnum + 1
-    endif
+  if a:lnum ==? 1
+    return 1
+  endif
+  if foldlevel(a:lnum) !=? a:baselinefold
+    return a:lnum + 1
+  endif
 
-    return s:FoldUpInBlock(a:lnum - 1, a:baselinefold)
+  return s:FoldUpInBlock(a:lnum - 1, a:baselinefold)
 endfunction
 
 function! s:FoldJumpUp() abort
-    if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
-        normal! k
-        execute "normal! " . s:UpUntilFold(line('.')) . "gg"
-    endif
+  if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
+    normal! k
+    execute "normal! " . s:UpUntilFold(line('.')) . "gg"
+  endif
 
-    let lnum = line('.')
-    let baselinefold = foldlevel(lnum)
+  let lnum = line('.')
+  let baselinefold = foldlevel(lnum)
 
-    let jumpline = s:FoldUpInBlock(lnum, baselinefold)
+  let jumpline = s:FoldUpInBlock(lnum, baselinefold)
 
-    execute "normal! " . jumpline . "gg"
+  execute "normal! " . jumpline . "gg"
 endfunction
 
 nnoremap <silent> <Plug>FoldJumpUp :<C-u> silent call <SID>FoldJumpUp()<CR>
 
 if g:foldjump_map_keys
-    noremap <s-k> <Plug>FoldJumpUp
+  noremap <s-k> <Plug>FoldJumpUp
 endif
