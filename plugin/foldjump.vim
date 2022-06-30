@@ -36,7 +36,7 @@ endfunction
 function! s:FoldJumpUp() abort
   if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
     normal! k
-    execute "normal! " . s:UpUntilFold(line('.')) . "gg"
+    execute 'normal! ' . s:UpUntilFold(line('.')) . 'gg'
   endif
 
   let lnum = line('.')
@@ -44,7 +44,7 @@ function! s:FoldJumpUp() abort
 
   let jumpline = s:FoldUpInBlock(lnum, baselinefold)
 
-  execute "normal! " . jumpline . "gg"
+  execute 'normal! ' . jumpline . 'gg'
 endfunction
 
 nnoremap <silent> <Plug>FoldJumpUp :<C-u> silent call <SID>FoldJumpUp()<CR>
