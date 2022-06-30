@@ -1,3 +1,19 @@
+" =============================================================================
+" File: plugin/foldjump.vim
+" Description: Jump between folds intuitively
+" Author: Diego Frias <github.com/dzfrias>
+" =============================================================================
+
+if exists('g:loaded_foldjump') || &compatible
+    finish
+endif
+
+let g:loaded_foldjump = 1
+
+if !exists('g:foldjump_map_keys')
+    let g:foldjump_map_keys = 1
+endif
+
 function! s:UpUntilFold(lnum) abort
     if foldlevel(a:lnum) !=? 0
         return a:lnum
@@ -17,18 +33,22 @@ function! s:FoldUpInBlock(lnum, baselinefold) abort
     return s:FoldUpInBlock(a:lnum - 1, a:baselinefold)
 endfunction
 
-function! FoldJumpUp() abort
+function! s:FoldJumpUp() abort
     if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
         normal! k
         execute "normal! " . s:UpUntilFold(line('.')) . "gg"
     endif
 
-    let line = line('.')
-    let baselinefold = foldlevel(line)
+    let lnum = line('.')
+    let baselinefold = foldlevel(lnum)
 
-    let jumpline = s:FoldUpInBlock(line, baselinefold)
+    let jumpline = s:FoldUpInBlock(lnum, baselinefold)
 
     execute "normal! " . jumpline . "gg"
 endfunction
 
-nnoremap <silent> <s-k> :call FoldJumpUp()<CR>
+nnoremap <silent> <Plug>FoldJumpUp :<C-u> silent call <SID>FoldJumpUp()<CR>
+
+if g:foldjump_map_keys
+    noremap <s-k> <Plug>FoldJumpUp
+endif
