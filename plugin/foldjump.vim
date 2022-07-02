@@ -15,6 +15,9 @@ if !exists('g:foldjump_map_keys')
 endif
 
 function! s:UpUntilFold(lnum) abort
+  if a:lnum ==? 1
+    return 1
+  endif
   if foldlevel(a:lnum) !=? 0
     return a:lnum
   endif
