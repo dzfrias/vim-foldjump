@@ -14,6 +14,8 @@ if !exists('g:foldjump_map_keys')
   let g:foldjump_map_keys = 1
 endif
 
+" UpUntilFold returns the nearest line that is foldlevel > 0 and the line above
+" it has a lower fold level.
 function! s:UpUntilFold(lnum) abort
   if a:lnum ==? 1
     return 1
@@ -26,6 +28,7 @@ function! s:UpUntilFold(lnum) abort
   return s:UpUntilFold(a:lnum - 1)
 endfunction
 
+" FoldUpInBlock returns the top of a block whose foldlevel is greater than 0.
 function! s:FoldUpInBlock(lnum, baselinefold) abort
   if a:lnum ==? 1
     return 1
@@ -37,6 +40,8 @@ function! s:FoldUpInBlock(lnum, baselinefold) abort
   return s:FoldUpInBlock(a:lnum - 1, a:baselinefold)
 endfunction
 
+" FoldJumpUp jumps the cursor to the nearest fold that is at the top of a
+" block whose foldlevel is greater than 0.
 function! s:FoldJumpUp() abort
   if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
     normal! k
@@ -50,6 +55,8 @@ function! s:FoldJumpUp() abort
   execute jumpline
 endfunction
 
+" FoldJumpGo uses FoldJumpUp but repeats it the number the times the user
+" specifies in a number prefix.
 function! s:FoldJumpGo() abort
   let repeat = v:count
   if repeat ==? 0
