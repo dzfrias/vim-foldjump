@@ -40,18 +40,29 @@ endfunction
 function! s:FoldJumpUp() abort
   if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
     normal! k
-    execute 'normal! ' . s:UpUntilFold(line('.')) . 'gg'
+    execute s:UpUntilFold(line('.'))
   endif
 
   let lnum = line('.')
   let baselinefold = foldlevel(lnum)
 
   let jumpline = s:FoldUpInBlock(lnum, baselinefold)
-
-  execute 'normal! ' . jumpline . 'gg'
+  execute jumpline
 endfunction
 
-nnoremap <silent> <Plug>FoldJumpUp :<C-u> silent call <SID>FoldJumpUp()<CR>
+function! s:FoldJumpGo() abort
+  let repeat = v:count
+  if repeat ==? 0
+    let repeat = 1
+  endif
+
+  while repeat > 0
+    call s:FoldJumpUp()
+    let repeat -= 1
+  endwhile
+endfunction
+
+nnoremap <silent> <Plug>FoldJumpUp :<C-u> call <SID>FoldJumpGo()<CR>
 
 if g:foldjump_map_keys
   noremap <s-k> <Plug>FoldJumpUp
