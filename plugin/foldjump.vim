@@ -37,6 +37,9 @@ function! s:FoldJumpUp() abort
   endif
 
   while foldlevel(lnum) >=? foldlevel(lnum - 1)
+    if lnum ==? 1
+      return
+    endif
     let lnum -= 1
   endwhile
   let lnum -= 1
@@ -61,7 +64,7 @@ function! s:FoldJumpGo() abort
   endwhile
 endfunction
 
-nnoremap <Plug>FoldJumpUp :<C-u> call <SID>FoldJumpGo()<CR>
+nnoremap <silent> <Plug>FoldJumpUp :<C-u> call <SID>FoldJumpGo()<CR>
 
 if g:foldjump_map_keys
   noremap <s-k> <Plug>FoldJumpUp
