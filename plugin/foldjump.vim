@@ -14,20 +14,6 @@ if !exists('g:foldjump_map_keys')
   let g:foldjump_map_keys = 1
 endif
 
-" UpUntilFold returns the nearest line that is foldlevel > 0 and the line above
-" it has a lower fold level.
-function! s:UpUntilFold(lnum) abort
-  if a:lnum ==? 1
-    return 1
-  endif
-  let foldlev = foldlevel(a:lnum)
-  if foldlev > 0 && foldlevel(a:lnum - 1) < foldlev
-    return a:lnum
-  endif
-
-  return s:UpUntilFold(a:lnum - 1)
-endfunction
-
 " FoldUpInBlock returns the top of a block whose foldlevel is greater than 0.
 function! s:FoldUpInBlock(lnum, baselinefold) abort
   let lnum = a:lnum
@@ -45,12 +31,16 @@ endfunction
 " FoldJumpUp jumps the cursor to the nearest fold that is at the top of a
 " block whose foldlevel is greater than 0.
 function! s:FoldJumpUp() abort
-  if foldlevel(line('.')) !=? foldlevel(line('.') - 1)
-    normal! k
-    execute s:UpUntilFold(line('.'))
+  let lnum = line('.')
+  if foldclosed(lnum) !=? -1
+    let lnum = foldclosed(lnum)
   endif
 
-  let lnum = line('.')
+  while foldlevel(lnum) >=? foldlevel(lnum - 1)
+    let lnum -= 1
+  endwhile
+  let lnum -= 1
+
   let baselinefold = foldlevel(lnum)
 
   let jumpline = s:FoldUpInBlock(lnum, baselinefold)
