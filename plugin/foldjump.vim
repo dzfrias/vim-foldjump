@@ -30,14 +30,16 @@ endfunction
 
 " FoldUpInBlock returns the top of a block whose foldlevel is greater than 0.
 function! s:FoldUpInBlock(lnum, baselinefold) abort
-  if a:lnum ==? 1
-    return 1
-  endif
-  if foldlevel(a:lnum) !=? a:baselinefold
-    return a:lnum + 1
-  endif
+  let lnum = a:lnum
 
-  return s:FoldUpInBlock(a:lnum - 1, a:baselinefold)
+  while foldlevel(lnum) ==? a:baselinefold
+    if lnum ==? 1
+      return a:lnum
+    endif
+    let lnum -= 1
+  endwhile
+
+  return lnum + 1
 endfunction
 
 " FoldJumpUp jumps the cursor to the nearest fold that is at the top of a
@@ -69,7 +71,7 @@ function! s:FoldJumpGo() abort
   endwhile
 endfunction
 
-nnoremap <silent> <Plug>FoldJumpUp :<C-u> call <SID>FoldJumpGo()<CR>
+nnoremap <Plug>FoldJumpUp :<C-u> call <SID>FoldJumpGo()<CR>
 
 if g:foldjump_map_keys
   noremap <s-k> <Plug>FoldJumpUp
