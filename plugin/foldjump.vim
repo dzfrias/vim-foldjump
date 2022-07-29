@@ -64,7 +64,7 @@ function! s:FoldJumpGo() abort
   endwhile
 endfunction
 
-nnoremap <Plug>FoldJumpUp <Cmd>call <SID>FoldJumpGo()<CR>
+noremap <Plug>FoldJumpUp <Cmd>call <SID>FoldJumpGo()<CR>
 
 if g:foldjump_map_keys
   noremap <s-k> <Plug>FoldJumpUp
